@@ -2,16 +2,19 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
+import { prettyJSON } from 'hono/pretty-json'
 
 import type { ErrorResponse } from "@/shared/types";
 
 import type { Context } from "./context";
 import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
+import { postRouter } from "./routes/posts";
 
 const app = new Hono<Context>();
 
 app.use(logger());
+app.use(prettyJSON()) // With options: prettyJSON({ space: 4 })
 
 //middleware to check if the user is logged in
 app.use("*", cors(), async (c, next) => {
@@ -38,8 +41,9 @@ app.use("*", cors(), async (c, next) => {
   return next();
 });
 
-const routes = app.basePath("/api").route("/auth", authRouter);
-// .route("/posts", postRouter)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const routes = app.basePath("/api").route("/auth", authRouter)
+  .route("/posts", postRouter)
 // .route("/comments", commentsRouter);
 
 //error handling
@@ -74,8 +78,6 @@ app.onError((err, c) => {
 });
 
 // console.log("Server Running on port", process.env["PORT"] || 3000);
-
-// console.log("Database running on", process.env["DATABASE_URL"]);
 
 export default {
   port: process.env["PORT"] || 3000,
