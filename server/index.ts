@@ -1,14 +1,48 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
+import { logger } from "hono/logger";
 
 import type { ErrorResponse } from "@/shared/types";
 
-const app = new Hono();
+import type { Context } from "./context";
+import { lucia } from "./lucia";
+import { authRouter } from "./routes/auth";
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
+const app = new Hono<Context>();
+
+app.use(logger());
+
+//middleware to check if the user is logged in
+app.use("*", cors(), async (c, next) => {
+  const sessionId = lucia.readSessionCookie(c.req.header("Cookie") ?? "");
+  if (!sessionId) {
+    c.set("user", null);
+    c.set("session", null);
+    return next();
+  }
+
+  const { session, user } = await lucia.validateSession(sessionId);
+  if (session && session.fresh) {
+    c.header("Set-Cookie", lucia.createSessionCookie(session.id).serialize(), {
+      append: true,
+    });
+  }
+  if (!session) {
+    c.header("Set-Cookie", lucia.createBlankSessionCookie().serialize(), {
+      append: true,
+    });
+  }
+  c.set("session", session);
+  c.set("user", user);
+  return next();
 });
 
+const routes = app.basePath("/api").route("/auth", authRouter);
+// .route("/posts", postRouter)
+// .route("/comments", commentsRouter);
+
+//error handling
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
     const errResponse =
@@ -39,4 +73,13 @@ app.onError((err, c) => {
   );
 });
 
-export default app;
+// console.log("Server Running on port", process.env["PORT"] || 3000);
+
+// console.log("Database running on", process.env["DATABASE_URL"]);
+
+export default {
+  port: process.env["PORT"] || 3000,
+  hostname: "0.0.0.0",
+  fetch: app.fetch,
+};
+export type ApiRoutes = typeof routes;
