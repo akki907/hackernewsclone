@@ -78,11 +78,13 @@ app.onError((err, c) => {
 app.get("*", serveStatic({ root: "./frontend/dist" }));
 app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
-export default {
-  port: process.env["PORT"] || 3000,
-  hostname: "0.0.0.0",
-  fetch: app.fetch,
-};
+// export default {
+//   port: process.env["PORT"] || 3000,
+//   hostname: "0.0.0.0",
+//   fetch: app.fetch,
+// };
+export default handle(app)
+
 
 console.log("Server Running on port", process.env["PORT"] || 3000);
 export type ApiRoutes = typeof routes;
