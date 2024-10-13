@@ -8,8 +8,8 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/shared": ["../shared/*"],
-      "@/*": ["./src/*"],
+      "@/shared/*": ["../shared/*"],
+      "@/*": ["./src/*"]
     }
   }
 }
