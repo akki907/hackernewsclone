@@ -86,13 +86,13 @@ export const PostCard = ({
                         <span>·</span>
                         <span>{relativeTime(post.createdAt)}</span>
                         <span>·</span>
-                        {/* <Link
+                        <Link
                             to={"/post"}
                             search={{ id: post.id }}
                             className="hover:underline"
                         >
                             {post.commentCount} comments
-                        </Link> */}
+                        </Link>
                     </div>
                 </CardContent>
             </div>

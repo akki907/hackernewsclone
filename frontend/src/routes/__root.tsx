@@ -1,13 +1,30 @@
-import * as React from 'react'
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { Toaster } from 'sonner'
-import { Header } from '@/components/Header'
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import { type QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-export const Route = createRootRoute({
+import { Toaster } from "@/components/ui/sonner";
+import { Header } from "@/components/Header";
+import React from "react";
+
+interface RouterContext {
+  queryClient: QueryClient;
+}
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null // Render nothing in production
+    : React.lazy(() =>
+      // Lazy load in development
+      import("@tanstack/router-devtools").then((res) => ({
+        default: res.TanStackRouterDevtools,
+        // For Embedded Mode
+        // default: res.TanStackRouterDevtoolsPanel
+      })),
+    );
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
@@ -25,5 +42,5 @@ function RootComponent() {
       <ReactQueryDevtools />
       <TanStackRouterDevtools position="bottom-left" />
     </>
-  )
+  );
 }

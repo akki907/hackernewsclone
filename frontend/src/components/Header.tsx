@@ -19,13 +19,12 @@ import {
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const { data: user } = useQuery(userQueryOptions());
-    // const user = "user"
     return (
         <header className="sticky top-0 z-50 w-full border-border/40 bg-primary/95 backdrop-blur supports-[backdrop-filter]:bg-primary/90">
             <div className="container mx-auto flex items-center justify-between p-4">
                 <div className="flex items-center space-x-4">
                     <Link to="/" className="text-2xl font-bold">
-                        HakerNews
+                        BetterNews
                     </Link>
                     <nav className="hidden items-center space-x-4 md:flex">
                         <Link
@@ -42,9 +41,9 @@ export function Header() {
                         >
                             top
                         </Link>
-                        {/* <Link to="/submit" className="hover:underline">
-              submit
-            </Link> */}
+                        <Link to="/submit" className="hover:underline">
+                            submit
+                        </Link>
                     </nav>
                 </div>
                 <div className="hidden items-center space-x-4 md:flex">
@@ -67,7 +66,7 @@ export function Header() {
                             variant="secondary"
                             className="bg-secondary-foreground text-primary-foreground hover:bg-secondary-foreground/70"
                         >
-                            {/* <Link to="/login">Log in</Link> */}
+                            <Link to="/login">Log in</Link>
                         </Button>
                     )}
                 </div>
@@ -101,13 +100,13 @@ export function Header() {
                             >
                                 top
                             </Link>
-                            {/* <Link
+                            <Link
                                 onClick={() => setIsOpen(false)}
                                 className="hover:underline"
                                 to="/submit"
                             >
                                 submit
-                            </Link> */}
+                            </Link>
                             {user ? (
                                 <>
                                     <span>user: {user}</span>
@@ -127,9 +126,9 @@ export function Header() {
                                     variant="secondary"
                                     className="bg-secondary-foreground text-primary-foreground hover:bg-secondary-foreground/70"
                                 >
-                                    {/* <Link onClick={() => setIsOpen(false)} to="/login">
+                                    <Link onClick={() => setIsOpen(false)} to="/login">
                                         Log in
-                                    </Link> */}
+                                    </Link>
                                 </Button>
                             )}
                         </nav>
