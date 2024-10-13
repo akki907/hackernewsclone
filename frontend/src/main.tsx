@@ -20,7 +20,7 @@ const router = createRouter({
   defaultPreloadStaleTime: 0,
   context: { queryClient },
   defaultPendingComponent: () => (
-    <div className="mx-auto mt-8 h-screen flex  flex-col items-center justify-center" >
+    <div className="mx-auto mt-8 h-screen flex  flex-col items-center justify-center">
       <Loader2Icon className="animate-spin" />
       <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
     </div>

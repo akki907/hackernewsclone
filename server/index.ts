@@ -1,23 +1,19 @@
 import { Hono } from "hono";
+import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { logger } from "hono/logger";
-import { prettyJSON } from 'hono/pretty-json'
+import { handle } from "hono/vercel";
 
-import type { ErrorResponse } from "@/shared/types";
+import { type ErrorResponse } from "@/shared/types";
 
 import type { Context } from "./context";
 import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
-import { postRouter } from "./routes/posts";
 import { commentsRouter } from "./routes/comments";
+import { postRouter } from "./routes/posts";
 
 const app = new Hono<Context>();
 
-app.use(logger());
-app.use(prettyJSON()) // With options: prettyJSON({ space: 4 })
-
-//middleware to check if the user is logged in
 app.use("*", cors(), async (c, next) => {
   const sessionId = lucia.readSessionCookie(c.req.header("Cookie") ?? "");
   if (!sessionId) {
@@ -43,11 +39,12 @@ app.use("*", cors(), async (c, next) => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const routes = app.basePath("/api").route("/auth", authRouter)
+const routes = app
+  .basePath("/api")
+  .route("/auth", authRouter)
   .route("/posts", postRouter)
   .route("/comments", commentsRouter);
 
-//error handling
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
     const errResponse =
@@ -78,10 +75,14 @@ app.onError((err, c) => {
   );
 });
 
+app.get("*", serveStatic({ root: "./frontend/dist" }));
+app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
 export default {
   port: process.env["PORT"] || 3000,
   hostname: "0.0.0.0",
   fetch: app.fetch,
 };
+
+console.log("Server Running on port", process.env["PORT"] || 3000);
 export type ApiRoutes = typeof routes;
