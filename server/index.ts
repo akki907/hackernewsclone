@@ -10,6 +10,7 @@ import type { Context } from "./context";
 import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
 import { postRouter } from "./routes/posts";
+import { commentsRouter } from "./routes/comments";
 
 const app = new Hono<Context>();
 
@@ -44,7 +45,7 @@ app.use("*", cors(), async (c, next) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const routes = app.basePath("/api").route("/auth", authRouter)
   .route("/posts", postRouter)
-// .route("/comments", commentsRouter);
+  .route("/comments", commentsRouter);
 
 //error handling
 app.onError((err, c) => {
@@ -77,7 +78,6 @@ app.onError((err, c) => {
   );
 });
 
-// console.log("Server Running on port", process.env["PORT"] || 3000);
 
 export default {
   port: process.env["PORT"] || 3000,
