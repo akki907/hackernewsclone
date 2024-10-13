@@ -6,7 +6,9 @@
     "format:check": "prettier .  --check",
     "lint:server": "cd server && eslint .",
     "lint:frontend": "cd frontend && eslint .",
-    "start": "bun run server/index.ts"
+    "start": "bun run server/index.ts",
+    "build:frontend": "cd frontend && bun run build",
+    "build": "bun run build:frontend"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
