@@ -10,6 +10,7 @@ import { lucia } from "./lucia";
 import { authRouter } from "./routes/auth";
 import { commentsRouter } from "./routes/comments";
 import { postRouter } from "./routes/posts";
+import { handle } from "hono/vercel";
 
 const app = new Hono<Context>();
 
@@ -77,7 +78,7 @@ app.onError((err, c) => {
 app.get("*", serveStatic({ root: "./frontend/dist" }));
 app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
-export default app
+export default handle(app)
 
 console.log("Server Running on port", process.env["PORT"] || 3000);
 export type ApiRoutes = typeof routes;
